@@ -57,7 +57,6 @@ EVE introduce un sistema de visualizacion unico:
 |---|---|
 | 📋 **Tablero Jira** | [EV-1 al EV-29](https://mail-team-bzjlcy7a.atlassian.net/browse/EV-1) |
 | 📄 **Requerimientos** | [docs/analisis-requerimientos.md](docs/analisis-requerimientos.md) |
-| 📝 **Plantilla Oficial** | [docs/analisis-requerimientos-eve.docx](docs/analisis-requerimientos-eve.docx) |
 | 🎨 **Manual de Identidad** | [docs/manual-identidad-eve.md](docs/manual-identidad-eve.md) |
 | 🖥️ **Prototipo HTML** | [prototipo/eve-prototipo-radar-focus.html](prototipo/eve-prototipo-radar-focus.html) |
 

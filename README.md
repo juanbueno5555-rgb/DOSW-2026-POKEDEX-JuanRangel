@@ -44,10 +44,10 @@ EVE introduce un sistema de visualizacion unico:
 👉 [Abrir prototipo](prototipo/eve-prototipo-radar-focus.html)
 
 ### V2: Light Theme (OpenPencil)
-![Version 2 - Light Theme](version2.png)
+![Version 2 - Light Theme](assets/version2.png)
 
 ### V3: Dark Theme (OpenPencil)
-![Version 3 - Dark Theme](version3.png)
+![Version 3 - Dark Theme](assets/version3.png)
 
 ---
 

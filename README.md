@@ -1,63 +1,43 @@
-# EVE — Pokédex Inteligente
+# EVE - Pokedex Inteligente
 
-**DOSW 2026 Intersemestral · Proyecto Individual**
-**Estudiante:** Juan David Rangel Jiménez
+DOSW 2026 Intersemestral - Proyecto Individual
+Estudiante: Juan David Rangel Jimenez
 
----
+## Descripcion
+EVE (Explorador Visual de Especies) es una Pokedex web con asistente de IA. Permite explorar, buscar y filtrar Pokemon, crear equipos competitivos y recibir recomendaciones del Profesor Oak.
 
-## Descripción
+Stack: Spring Boot + React + PostgreSQL + Google OAuth2
 
-EVE (Explorador Visual de Especies) es una Pokédex web con asistente de IA. Permite explorar, buscar y filtrar Pokémon, crear equipos competitivos con análisis de fortalezas y debilidades, y recibir recomendaciones personalizadas del **Profesor Oak**.
+## Diferenciador: Radar - Focus
+- Modo Radar: Pokemon en anillo circular con barrido animado
+- Modo Focus: Detalle completo al centro con stats
+- Ninguna otra Pokedex tiene este concepto
 
-### Stack
-- **Backend:** Spring Boot + JPA + PostgreSQL
-- **Frontend:** React
-- **Autenticación:** Google OAuth 2.0
-- **APIs:** REST con JSON, UUID v4
+## Funcionalidades (8 RFs)
+RF-001 Gestion de Usuarios | RF-002 Gestion de Pokemon | RF-003 Consulta | RF-004 Filtros | RF-005 Favoritos | RF-006 Equipos | RF-007 Estadisticas | RF-008 Profesor Oak
 
----
+## Prototipo - 3 Versiones
 
-## Funcionalidades
+### V1: HTML Interactivo
+Prototipo funcional con Radar/Focus y datos reales de PokeAPI.
+Link: prototipo/eve-prototipo-radar-focus.html
 
-| RF | Funcionalidad |
-|---|---|
-| RF-001 | Gestión de Usuarios (Login Google + Perfil + Admin CRUD) |
-| RF-002 | Gestión de Pokémon (Admin CRUD) |
-| RF-003 | Consulta de Pokémon (Listar, Buscar, Detalle) |
-| RF-004 | Filtrado y Organización (tipo, región, generación, rareza, etc.) |
-| RF-005 | Gestión de Favoritos |
-| RF-006 | Gestión de Equipos + Análisis Competitivo |
-| RF-007 | Estadísticas de Uso (ranking, popularidad) |
-| RF-008 | Asistente Profesor Oak (IA) |
+### V2: Light Theme (OpenPencil)
+Fondo crema, acentos rojo, estilo vectorial Pokemon.
+localhost:3000/editor - Pagina 1
 
----
+### V3: Dark Theme (OpenPencil)
+Fondo oscuro, acentos purpura, estilo gamer.
+localhost:3000/editor - Pagina 2
 
 ## Enlaces
+- Jira: https://mail-team-bzjlcy7a.atlassian.net/browse/EV-1
+- Requerimientos: docs/analisis-requerimientos.md
+- Plantilla Oficial: docs/analisis-requerimientos-eve.docx
+- Manual Identidad: docs/manual-identidad-eve.md
+- Prototipo HTML: prototipo/eve-prototipo-radar-focus.html
 
-| Recurso | Enlace |
-|---|---|
-| 📋 **Tablero Jira** | [EV-1: EVE Pokédex](https://mail-team-bzjlcy7a.atlassian.net/browse/EV-1) |
-| 🎨 **Prototipo OpenPencil** | `http://localhost:3000/editor` (local) |
-| 📄 **Requerimientos** | [docs/analisis-requerimientos-eve.docx](docs/analisis-requerimientos-eve.docx) |
-| 🎨 **Manual de Identidad** | [docs/manual-identidad-eve.md](docs/manual-identidad-eve.md) |
-| 🖥️ **Prototipo HTML** | [prototipo/eve-prototipo-radar-focus.html](prototipo/eve-prototipo-radar-focus.html) |
+## Paleta EVE
+Deep Void #0A0A14 | Cream #FEF9F0 | EVE Violet #6C5CE7 | Pokemon Red #E84C3D
 
----
-
-## Prototipo
-
-El prototipo incluye dos versiones en OpenPencil:
-- ☀️ **Light:** Fondo crema, estilo vectorial Pokémon
-- 🌙 **Dark:** Tema oscuro con acentos púrpura (#6C5CE7)
-
-### Paleta EVE
-| Color | Hex |
-|---|---|
-| Deep Void | `#0A0A14` |
-| EVE Violet | `#6C5CE7` |
-| Cream | `#FEF9F0` |
-| Pokemon Red | `#E84C3D` |
-
----
-
-> **"EVE no es una Pokédex más. Es TU compañera de viaje."**
+EVE no es una Pokedex mas. Es TU companera de viaje.

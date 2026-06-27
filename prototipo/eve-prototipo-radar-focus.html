@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EVE Pokédex — Prototipo Radar/Focus</title>
+<style>
+:root{--eve-bg:#0A0A14;--eve-card:#141428;--eve-accent:#6C5CE7;--eve-fire:#E17055;--eve-water:#74B9FF;--eve-grass:#55EFC4;--eve-electric:#FDCB6E;--eve-psychic:#FD79A8;--eve-text:#DFE6E9;--eve-muted:#636E72;--eve-glow:0 0 20px rgba(108,92,231,0.3);--eve-radius:16px;--radar-size:420px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--eve-bg);color:var(--eve-text);min-height:100vh;overflow-x:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:rgba(20,20,40,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(108,92,231,0.2);position:sticky;top:0;z-index:100}
+.topbar .logo{font-size:1.5em;font-weight:700;letter-spacing:2px}
+.topbar .logo span{color:var(--eve-accent)}
+.search-bar{margin:16px 20px;display:flex;gap:10px}
+.search-bar input{flex:1;padding:12px 18px;border-radius:var(--eve-radius);border:1px solid rgba(108,92,231,0.3);background:var(--eve-card);color:var(--eve-text);font-size:1em;outline:none}
+.search-bar input:focus{border-color:var(--eve-accent);box-shadow:var(--eve-glow)}
+.view-toggle{display:flex;gap:4px;background:var(--eve-card);border-radius:var(--eve-radius);padding:4px}
+.view-toggle button{padding:8px 16px;border:none;border-radius:12px;background:transparent;color:var(--eve-muted);cursor:pointer;font-size:0.9em;transition:all 0.2s}
+.view-toggle button.active{background:var(--eve-accent);color:#fff;box-shadow:var(--eve-glow)}
+.filters{display:flex;gap:8px;padding:0 20px 12px;flex-wrap:wrap}
+.filters .chip{padding:6px 14px;border-radius:20px;background:var(--eve-card);border:1px solid rgba(108,92,231,0.2);font-size:0.8em;cursor:pointer;transition:all 0.2s}
+.filters .chip:hover,.filters .chip.active{background:var(--eve-accent);border-color:var(--eve-accent)}
+.radar-container{display:flex;justify-content:center;align-items:center;padding:20px;min-height:500px}
+.radar-ring{position:relative;width:var(--radar-size);height:var(--radar-size);border-radius:50%;border:2px solid rgba(108,92,231,0.15);background:radial-gradient(circle,rgba(108,92,231,0.05) 0%,transparent 70%)}
+.radar-sweep{position:absolute;top:0;left:50%;width:50%;height:100%;background:conic-gradient(from 0deg,transparent 0deg,rgba(108,92,231,0.08) 30deg,transparent 60deg);border-radius:0 50% 50% 0;transform-origin:left center;animation:sweep 4s linear infinite;pointer-events:none}
+@keyframes sweep{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.orbit-pokemon{position:absolute;width:72px;height:72px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);background:var(--eve-card);border:2px solid transparent}
+.orbit-pokemon:hover{transform:scale(1.25);z-index:10;box-shadow:var(--eve-glow);border-color:var(--eve-accent)}
+.orbit-pokemon img{width:48px;height:48px;object-fit:contain}
+.orbit-pokemon .name{font-size:0.6em;white-space:nowrap}
+.focus-container{display:none;padding:20px}
+.focus-card{max-width:600px;margin:0 auto;background:var(--eve-card);border-radius:var(--eve-radius);border:1px solid rgba(108,92,231,0.2);overflow:hidden}
+.focus-header{display:flex;align-items:center;gap:24px;padding:24px;background:linear-gradient(135deg,rgba(108,92,231,0.15),rgba(108,92,231,0.02))}
+.focus-header img{width:120px;height:120px;object-fit:contain}
+.focus-body{padding:24px}
+.stat-row{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.stat-bar-bg{flex:1;height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;padding:10px 0;background:rgba(20,20,40,0.97);backdrop-filter:blur(12px);border-top:1px solid rgba(108,92,231,0.2);z-index:100}
+.bottom-nav .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;cursor:pointer;color:var(--eve-muted);font-size:0.6em;border:none;background:none}
+.bottom-nav .nav-item.active{color:var(--eve-accent)}
+.hidden{display:none!important}
+.type-fire{background:var(--eve-fire);color:#000}
+.type-water{background:var(--eve-water);color:#000}
+.type-grass{background:var(--eve-grass);color:#000}
+.type-electric{background:var(--eve-electric);color:#000}
+.type-psychic{background:var(--eve-psychic);color:#000}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">EVE<span>.</span></div>
+  <div class="actions">
+    <div class="view-toggle" id="viewToggle">
+      <button data-view="radar" class="active">Radar</button>
+      <button data-view="focus">Focus</button>
+    </div>
+    <div class="avatar" style="width:36px;height:36px;border-radius:50%;background:var(--eve-accent);display:flex;align-items:center;justify-content:center;font-weight:700">J</div>
+  </div>
+</div>
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Buscar Pokemon por nombre o numero...">
+</div>
+<div class="filters" id="filters"></div>
+<div class="radar-container" id="radarView">
+  <div class="radar-ring" id="radarRing">
+    <div class="radar-sweep"></div>
+  </div>
+</div>
+<div class="focus-container hidden" id="focusView"></div>
+<div class="bottom-nav">
+  <button class="nav-item active"><span style="font-size:1.5em">Explorar</span></button>
+  <button class="nav-item"><span style="font-size:1.5em">Favoritos</span></button>
+  <button class="nav-item"><span style="font-size:1.5em">Equipos</span></button>
+  <button class="nav-item"><span style="font-size:1.5em">Oak</span></button>
+</div>
+<script>
+const pokemonData=[{id:1,name:"Bulbasaur",num:"#001",types:["grass","poison"],img:"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",hp:45,atk:49,def:49,spa:65,spd:65,spe:45,desc:"Una extraña semilla fue plantada en su espalda al nacer."},{id:4,name:"Charmander",num:"#004",types:["fire"],img:"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",hp:39,atk:52,def:43,spa:60,spd:50,spe:65,desc:"Prefiere los sitios calientes."},{id:7,name:"Squirtle",num:"#007",types:["water"],img:"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",hp:44,atk:48,def:65,spa:50,spd:64,spe:43,desc:"Dispara agua a presion increible."},{id:25,name:"Pikachu",num:"#025",types:["electric"],img:"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",hp:35,atk:55,def:40,spa:50,spd:50,spe:90,desc:"Su electricidad puede causar tormentas."},{id:150,name:"Mewtwo",num:"#150",types:["psychic"],img:"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png",hp:106,atk:110,def:90,spa:154,spd:90,spe:130,desc:"Pokemon creado por manipulacion genetica."},{id:6,name:"Charizard",num:"#006",types:["fire"],img:"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",hp:78,atk:84,def:78,spa:109,spd:85,spe:100,desc:"Escupe fuego que derrite rocas."}];
+let currentView='radar',selectedPokemon=null;
+const allTypes=[...new Set(pokemonData.flatMap(p=>p.types))];
+document.getElementById('filters').innerHTML=allTypes.map(t=>`<span class="chip type-${t}" data-type="${t}">${t}</span>`).join('');
+function renderRadar(){
+  const ring=document.getElementById('radarRing');
+  ring.querySelectorAll('.orbit-pokemon').forEach(el=>el.remove());
+  const filtered=pokemonData;
+  const ringW=ring.offsetWidth,ringH=ring.offsetHeight,cx=ringW/2,cy=ringH/2,r=Math.min(cx,cy)*0.6;
+  filtered.forEach((p,i)=>{
+    const angle=-90+(360/filtered.length)*i,rad=angle*Math.PI/180;
+    const el=document.createElement('div');el.className='orbit-pokemon';
+    el.style.left=(cx+r*Math.cos(rad)-36)+'px';el.style.top=(cy+r*Math.sin(rad)-36)+'px';
+    el.innerHTML=`<img src="${p.img}" alt="${p.name}"><span class="name">${p.name}</span>`;
+    el.addEventListener('click',()=>{selectedPokemon=p;switchToFocus(p)});
+    ring.appendChild(el);
+  });
+}
+function switchToFocus(p){
+  currentView='focus';
+  document.getElementById('radarView').classList.add('hidden');
+  document.getElementById('focusView').classList.remove('hidden');
+  const stats=[{l:'HP',v:p.hp,c:'#55EFC4'},{l:'ATK',v:p.atk,c:'#E17055'},{l:'DEF',v:p.def,c:'#FDCB6E'},{l:'SPD',v:p.spe,c:'#FD79A8'}];
+  document.getElementById('focusView').innerHTML=`<div class="focus-card"><div class="focus-header"><img src="${p.img}"><div><h2>${p.name}</h2><span style="color:var(--eve-muted)">${p.num}</span></div></div><div class="focus-body"><p style="color:var(--eve-muted);margin-bottom:16px">${p.desc}</p>${stats.map(s=>`<div class="stat-row"><span style="width:60px;font-size:0.8em;color:var(--eve-muted)">${s.l}</span><span style="width:30px;font-weight:700">${s.v}</span><div class="stat-bar-bg"><div style="width:${s.v/255*100}%;height:100%;border-radius:4px;background:${s.c}"></div></div></div>`).join('')}<div style="display:flex;gap:8px;margin-top:16px"><button style="flex:1;padding:10px;border-radius:12px;border:none;background:var(--eve-accent);color:#fff;cursor:pointer;font-weight:600">Favorito</button><button style="flex:1;padding:10px;border-radius:12px;border:1px solid var(--eve-accent);background:transparent;color:var(--eve-accent);cursor:pointer;font-weight:600">Agregar a Equipo</button></div></div></div>`;
+}
+function switchToRadar(){
+  currentView='radar';document.getElementById('radarView').classList.remove('hidden');
+  document.getElementById('focusView').classList.add('hidden');selectedPokemon=null;renderRadar();
+}
+document.getElementById('viewToggle').addEventListener('click',e=>{
+  const btn=e.target.closest('button');if(!btn)return;
+  if(btn.dataset.view==='radar')switchToRadar();
+  else if(btn.dataset.view==='focus'&&selectedPokemon)switchToFocus(selectedPokemon);
+});
+renderRadar();
+</script>
+</body>
+</html>
